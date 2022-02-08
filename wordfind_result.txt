@@ -1,0 +1,24 @@
+워트카운터 입니다.
+분석결과 (단어명 : 개수)
+I : 1
+Do : 1
+not : 2
+go : 3
+out : 1
+to : 1
+work : 1
+or : 2
+school : 1
+if : 1
+you : 1
+arr : 1
+unwell : 1
+with : 1
+fever : 2
+respiratory : 1
+syptoms : 1
+not : 2
+go : 3
+or : 2
+fever : 2
+go : 3

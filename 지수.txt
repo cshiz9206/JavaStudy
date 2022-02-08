@@ -1,0 +1,4 @@
+math : 30
+kor : 50
+eng : 90
+sci : 90
