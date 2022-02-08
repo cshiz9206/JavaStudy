@@ -15,11 +15,6 @@ public class Wall extends JLabel {
 	}
 	
 	public void scoring() {
-		for(WallColor wc : WallColor.values()) {
-			if(getIcon().toString().equals(wc.path)) {
-				color = wc;
-				User.score += wc.point;
-			}
-		}
+		User.score += color.point;
 	}
 }

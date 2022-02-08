@@ -3,7 +3,6 @@ package OwnGame;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -11,24 +10,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 public class BreakOutFrame extends JFrame implements KeyListener {
 	User user;
 	Ball ball;
 	
 	Container ct;
-	JPanel bk;
 	
 	final int floor = 5;
 	final int wallCntByFloor = 12;
 	final int wallCount = floor * wallCntByFloor;
 	
 	public BreakOutFrame() {
-		ImageIcon ii = new ImageIcon("C:\\Users\\witlab\\OneDrive\\WITLAB\\Java\\java_edu_Á¤½ÂÇö\\JAVA_edu_Á¤½ÂÇö\\src\\OwnGame\\back2.png");
-
 		setSize(676, 900);
-		
 		setTitle("Break out");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -55,9 +49,6 @@ public class BreakOutFrame extends JFrame implements KeyListener {
 		info.setFont(new Font("¸¼Àº°íµñ", Font.BOLD, 20));
 		info.setLocation(ct.getWidth() / 2 - (info.getWidth() / 2), ct.getHeight() - 150);
 		ct.add(info);
-		
-		ct.repaint();
-		ct.setVisible(true);
 
 		new Thread(ball).start();
 		new TimeThread(info).start();
@@ -97,9 +88,14 @@ public class BreakOutFrame extends JFrame implements KeyListener {
 		a : for(int i = 0; i < wallCntByFloor; i++) {
 				for(int j = 0; j < floor; j++) {
 					walls[tmpWallCnt] = new Wall(ctWidth, ctHeight);
-					walls[tmpWallCnt].setLocation(((i * ctWidth / wallCntByFloor) + (ctWidth / wallCntByFloor / 2) - (walls[tmpWallCnt].getWidth() / 2)), 50 + j * (walls[tmpWallCnt].getHeight() + 10));
+					walls[tmpWallCnt].setLocation(((i * ctWidth / wallCntByFloor) + 
+							(ctWidth / wallCntByFloor / 2) - (walls[tmpWallCnt].getWidth() / 2)), 
+							50 + j * (walls[tmpWallCnt].getHeight() + 10));
 					for(WallColor wc : WallColor.values()) {
-						if(wc.floorNum == (floor - j)) walls[tmpWallCnt].setIcon(new ImageIcon(wc.path));
+						if(wc.floorNum == (floor - j)) {
+							walls[tmpWallCnt].setIcon(new ImageIcon(wc.path));
+							walls[tmpWallCnt].color = wc;
+						}
 					}
 					ct.add(walls[tmpWallCnt]);
 					tmpWallCnt += 1;

@@ -32,7 +32,7 @@ public class Ball extends JLabel implements Runnable {
 		
 		Random rd = new Random();
 		this.xSpeed = 0;
-		this.ySpeed = rd.nextInt(MAXSPEED) + 1;
+		this.ySpeed = rd.nextInt(MAXSPEED - 5) + 5;
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class Ball extends JLabel implements Runnable {
 		if(getX() <= 0) xSpeed *= -1;
 		if((getX() + getWidth()) >= maxWidth) xSpeed *= -1;
 		if(getY() <= 0) ySpeed *= -1;
-		if((getY() + getHeight()) >= maxHeight) ySpeed *= -1; //isDead = true;
+		if((getY() + getHeight()) >= maxHeight) isDead = true;
 	}
 	
 	void checkBumpedUser() {
@@ -158,7 +158,7 @@ public class Ball extends JLabel implements Runnable {
 	}
 	
 	void crash(int i) {
-		for(int j = 0; j < 40; j++) {
+		for(int j = 0; j < 100; j++) {
 			Fragment fg = new Fragment(walls[i], ct);
 			new Thread(fg).start();
 		}

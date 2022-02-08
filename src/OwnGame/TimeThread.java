@@ -22,7 +22,7 @@ public class TimeThread extends Thread {
 			LocalDateTime now = LocalDateTime.now();
 			Duration time = Duration.between(start, now);
 			int sec = (int)(maxTime - time.getSeconds());
-			jlbHead.setText("time : " + sec + "s, score : " + User.score + "Á¡");
+			jlbHead.setText("time : " + sec + "s, score : " + User.score);
 			if(sec == 0) {
 				timeEnd = true;
 				jlbHead.setText("Your score : " + (User.score + sec));
