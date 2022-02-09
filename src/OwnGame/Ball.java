@@ -2,9 +2,7 @@ package OwnGame;
 
 import java.awt.Container;
 import java.awt.Point;
-import java.util.Arrays;
 import java.util.Random;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -19,7 +17,8 @@ public class Ball extends JLabel implements Runnable {
 	final int MAXSPEED = 10;
 	
 	public Ball(int maxWidth, int maxHeight, User user, Wall[] walls, Container ct) {
-		ImageIcon ii = new ImageIcon("C:\\Users\\witlab\\OneDrive\\WITLAB\\Java\\java_edu_Á¤½ÂÇö\\JAVA_edu_Á¤½ÂÇö\\src\\OwnGame\\ball.png");
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\ball.png");
+		System.out.println(System.getProperty("user.dir"));
 		setIcon(ii);
 		setSize(ii.getIconWidth(), ii.getIconHeight());
 		setLocation(maxWidth / 2 - (getWidth() / 2), maxHeight / 2);

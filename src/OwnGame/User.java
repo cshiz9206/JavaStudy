@@ -14,7 +14,7 @@ public class User extends JLabel {
 	static int score = 0;
 	
 	public User(int maxWidth, int maxHeight) {
-		ImageIcon ii = new ImageIcon("C:\\Users\\witlab\\OneDrive\\WITLAB\\Java\\java_edu_Á¤½ÂÇö\\JAVA_edu_Á¤½ÂÇö\\src\\OwnGame\\user.png");
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\user.png");
 		setIcon(ii);
 		setSize(ii.getIconWidth(), ii.getIconHeight());
 		setLocation(maxWidth / 2 - (getWidth() / 2), maxHeight - 30);

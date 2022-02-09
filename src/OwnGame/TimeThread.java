@@ -3,7 +3,6 @@ package OwnGame;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class TimeThread extends Thread {
