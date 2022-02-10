@@ -6,7 +6,7 @@ public class Main {
 		// TODO Auto-generated method stub
 //		TcpClient tcpConnect = new TcpClient();
 //		tcpConnect.start();
-		new BreakOutFrame();
+		new Thread(new StageThread()).start();
 	}
 
 }

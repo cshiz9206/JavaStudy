@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 
+import com.sun.xml.internal.ws.api.server.Container;
+
 public class TimeThread extends Thread implements Serializable {
 	static int score = 0;
 	int maxTime = 5000;
 	JLabel jlbHead;
 	ScoreBoard db;
+	Container ct;
 	static boolean timeEnd = false;
 	
 	public TimeThread(JLabel jlbHead, ScoreBoard db) {
@@ -39,6 +42,6 @@ public class TimeThread extends Thread implements Serializable {
 			}
 		}
 		
-		SaveNameFrame snf = new SaveNameFrame(db);
+		//SaveNameFrame snf = new SaveNameFrame(db);
 	}
 }

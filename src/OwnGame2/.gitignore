@@ -14,3 +14,6 @@
 /TimeThread.class
 /Wall.class
 /WallColor.class
+/CheckEnd.class
+/CheckEndThread.class
+/StageThread.class
