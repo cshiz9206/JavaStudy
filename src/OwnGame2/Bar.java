@@ -6,7 +6,7 @@ import java.io.Serializable;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class Bar extends JLabel implements Serializable {
+public class Bar extends JLabel {
 	int maxWidth;
 	int moveLeftAmt = 0;
 	int moveRightAmt = 0;
@@ -19,7 +19,8 @@ public class Bar extends JLabel implements Serializable {
 		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\user.png");
 		setIcon(ii);
 		setSize(ii.getIconWidth(), ii.getIconHeight());
-		setLocation(startX + maxWidth / 2 - (getWidth() / 2), maxHeight - 30);
+		//setLocation(startX + maxWidth / 2 - (getWidth() / 2), maxHeight - 70);
+		setLocation(270, 810);
 		
 		this.maxWidth = maxWidth;
 	}

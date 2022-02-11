@@ -1,17 +1,17 @@
 package OwnGame2;
 
-import java.awt.Container;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class Fragment extends JLabel implements Runnable {
 	int moveX, moveY;
 	
-	Container ct;
+	JPanel mainPnl;
 	
-	public Fragment(Wall wall, Container ct) {
+	public Fragment(Wall wall, JPanel mainPnl) {
 		ImageIcon ii = new ImageIcon(wall.color.fragPath);
 		setIcon(ii);
 		setSize(ii.getIconWidth(), ii.getIconHeight());
@@ -25,8 +25,8 @@ public class Fragment extends JLabel implements Runnable {
 		moveX = rd.nextInt(6) - 3;
 		moveY = rd.nextInt(3) + 1;
 		
-		this.ct = ct;
-		ct.add(this);
+		this.mainPnl = mainPnl;
+		mainPnl.add(this);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class Fragment extends JLabel implements Runnable {
 			moved += moveY;
 			tmp += 0.5;
 			if(moved >= 400) {
-				ct.remove(this);
+				mainPnl.remove(this);
 				break;
 			}
 			

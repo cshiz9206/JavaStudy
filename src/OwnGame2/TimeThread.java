@@ -1,6 +1,5 @@
 package OwnGame2;
 
-import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -8,19 +7,14 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 
-import com.sun.xml.internal.ws.api.server.Container;
-
-public class TimeThread extends Thread implements Serializable {
+public class TimeThread extends Thread {
 	static int score = 0;
-	int maxTime = 5000;
+	int maxTime = 10;
 	JLabel jlbHead;
-	ScoreBoard db;
-	Container ct;
 	static boolean timeEnd = false;
 	
-	public TimeThread(JLabel jlbHead, ScoreBoard db) {
-		this.jlbHead = jlbHead;
-		this.db = db;
+	public TimeThread(JLabel info) {
+		this.jlbHead = info;
 	}
 	
 	public void run() {
@@ -40,8 +34,13 @@ public class TimeThread extends Thread implements Serializable {
 				jlbHead.setText("Your score : " + Bar.score);
 				break;
 			}
+			
+			try {
+				sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
-		//SaveNameFrame snf = new SaveNameFrame(db);
 	}
 }

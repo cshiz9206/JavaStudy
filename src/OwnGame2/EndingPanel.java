@@ -15,19 +15,16 @@ public class EndingPanel extends JPanel implements ActionListener {
 	String userName;
 	ScoreBoard db;
 	
-	public EndingPanel(int ctWidth, int ctHeight, ScoreBoard db) {
+	public EndingPanel(Container ct, ScoreBoard db) {
 		setBounds(0, 0, 500, 500);
-		System.out.println(ctWidth + " " + ctHeight);
 		//setUndecorated(true);
 		setBackground(Color.WHITE);
 		setLayout(new FlowLayout());
 		
 		jtf = new JTextField(10);
-		jtf.setBackground(new Color(255, 255, 255, 100));
 		add(jtf);
 		
 		JButton btn = new JButton("Save");
-		btn.setBackground(new Color(250, 250, 250, 80));
 		btn.addActionListener(this);
 		add(btn);
 		

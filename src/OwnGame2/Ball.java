@@ -1,23 +1,24 @@
 package OwnGame2;
 
-import java.awt.Container;
 import java.awt.Point;
-import java.io.Serializable;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-public class Ball extends JLabel implements Runnable, Serializable {
+public class Ball extends JLabel implements Runnable {
 	int maxWidth, maxHeight;
+	
 	Bar user;
 	Wall[] walls;
-	Container ct;
+	JPanel mainPnl;
+	
 	double xSpeed, ySpeed;
 	static boolean isDead = false;
 	final int MAXSPEED = 10;
 	
-	public Ball(int startX, int maxWidth, int maxHeight, Bar user, Wall[] walls, Container ct) {
+	public Ball(int startX, int maxWidth, int maxHeight, Bar user, Wall[] walls, JPanel mainPnl) {
 		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\ball.png");
 		setIcon(ii);
 		setSize(ii.getIconWidth(), ii.getIconHeight());
@@ -27,7 +28,7 @@ public class Ball extends JLabel implements Runnable, Serializable {
 		this.maxHeight = maxHeight;
 		this.user = user;
 		this.walls = walls;
-		this.ct = ct;
+		this.mainPnl = mainPnl;
 		
 		Random rd = new Random();
 		this.xSpeed = 0;
@@ -39,14 +40,12 @@ public class Ball extends JLabel implements Runnable, Serializable {
 		// TODO Auto-generated method stub
 		while(true) {
 			if(checkWallsRemoved()) {
-				ct.remove(this);
-				ct.repaint();
+				mainPnl.remove(this);
 				isDead = true;
 				break;
 			}
 			if(isDead || TimeThread.timeEnd) {
-				ct.remove(this);
-				ct.repaint();
+				mainPnl.remove(this);
 				break;
 			}
 			
@@ -55,7 +54,10 @@ public class Ball extends JLabel implements Runnable, Serializable {
 			checkBumpedWall();
 			
 			setLocation((int)(getX() + xSpeed), (int)(getY() + ySpeed));
-			ct.repaint();
+			//System.out.println(getX() + " " + user.getY());
+			//System.out.println(mainPnl.getBounds().getMaxX() + " " + mainPnl.getBounds().getMaxY());
+			//System.out.println(ct.getBounds().getMaxX() + " " + mainPnl.getBounds().getMaxY());
+			//mainPnl.repaint();
 			
 			try {
 				Thread.sleep(10);
@@ -148,8 +150,8 @@ public class Ball extends JLabel implements Runnable, Serializable {
 				walls[i].scoring();
 				crash(i);
 				
-				ct.remove(walls[i]);
-				ct.repaint();
+				mainPnl.remove(walls[i]);
+				mainPnl.repaint();
 				walls[i] = null;
 			}
 		}
@@ -157,7 +159,7 @@ public class Ball extends JLabel implements Runnable, Serializable {
 	
 	void crash(int i) {
 		for(int j = 0; j < 100; j++) {
-			Fragment fg = new Fragment(walls[i], ct);
+			Fragment fg = new Fragment(walls[i], mainPnl);
 			new Thread(fg).start();
 		}
 	}

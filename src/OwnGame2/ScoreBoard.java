@@ -17,9 +17,7 @@ public class ScoreBoard {
 	// DBMS 접속할 DB명 (프로토콜 : jdbc:mysql / host : localhost / port : 3306 / filename : scorelog)
 	private static final String URL = "jdbc:mysql://localhost:3306/scorelog";
 	
-	JTable jtb;
-	
-	public ScoreBoard(JTable jtb) {
+	public ScoreBoard() {
 		try {
 			/* 드라이브 로딩 Driver loading(DB 제품군 선택) 
 			/ forName([클래스명] or [패키지명.드라이버클래스명]) 
@@ -38,8 +36,6 @@ public class ScoreBoard {
 				e1.printStackTrace();
 			}
 		}
-		
-		this.jtb = jtb;
 	}
 	
 	public void insertBoard(String connectName, int score) {
@@ -73,8 +69,6 @@ public class ScoreBoard {
 	}
 	
 	public ArrayList readBoard() {
-		// https://blog.naver.com/PostView.nhn?isHttpsRedirect=true&blogId=munjh4200&logNo=50176968113
-		// https://comster.tistory.com/776
 		ArrayList<String[]> data = new ArrayList<String[]>();
 		int rank = 1;
 		
@@ -135,16 +129,7 @@ public class ScoreBoard {
 			}
 		}
 	}
-	
-	public void dataUpdate() {
-		clearJtable();
-		ArrayList<String[]> data = readBoard();
-		for(String[] userData : data) ((DefaultTableModel)jtb.getModel()).addRow(userData);
-	}
-	
-	public void clearJtable() {
-		((DefaultTableModel)jtb.getModel()).setNumRows(0);
-		String[] header = {"No", "User", "Score"};
-		((DefaultTableModel)jtb.getModel()).addRow(header);
-	}
 }
+
+// https://blog.naver.com/PostView.nhn?isHttpsRedirect=true&blogId=munjh4200&logNo=50176968113
+// https://comster.tistory.com/776
