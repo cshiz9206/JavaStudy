@@ -9,12 +9,13 @@ import javax.swing.table.DefaultTableModel;
 
 public class TimeThread extends Thread {
 	static int score = 0;
-	int maxTime = 10;
-	JLabel jlbHead;
+	int maxTime = 100;
+	JLabel scoreLbl, timerLbl;
 	static boolean timeEnd = false;
 	
-	public TimeThread(JLabel info) {
-		this.jlbHead = info;
+	public TimeThread(JLabel scoreLbl, JLabel timerLbl) {
+		this.scoreLbl = scoreLbl;
+		this.timerLbl = timerLbl;
 	}
 	
 	public void run() {
@@ -23,15 +24,16 @@ public class TimeThread extends Thread {
 			LocalDateTime now = LocalDateTime.now();
 			Duration time = Duration.between(start, now);
 			int sec = (int)(maxTime - time.getSeconds());
-			jlbHead.setText("time : " + sec + "s, score : " + Bar.score);
+			timerLbl.setText(sec + "s");
+			scoreLbl.setText("" + Bar.score);
 			if(sec == 0) {
 				timeEnd = true;
 				Bar.score = Bar.score + sec;
-				jlbHead.setText("Your score : " + Bar.score);
+				//jlbHead.setText("Your score : " + Bar.score);
 				break;
 			}
 			if(Ball.isDead) {
-				jlbHead.setText("Your score : " + Bar.score);
+				//jlbHead.setText("Your score : " + Bar.score);
 				break;
 			}
 			

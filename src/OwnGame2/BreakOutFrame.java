@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -19,34 +21,37 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class BreakOutFrame extends JFrame implements KeyListener, ActionListener {
+public class BreakOutFrame extends JFrame implements KeyListener, ActionListener, MouseListener {
 	JPanel mainPnl;
 	JPanel endPnl;
-	JPanel backPnl;
+	JPanel startPnl;
 	JTable jtb;
-	JLabel info;
-	JLabel endLbl;
+	JLabel titleLbl, endLbl, timerLbl, scoreLbl;
 	JButton saveBtn, restartBtn;
+	JLabel startBtn;
 	JTextField nameJtf;
 	
 	Container ct;
 	ScoreBoard db;
+	ChangePnlThread st;
 	
 	Wall[] walls;
 	Bar bar;
 	Ball ball;
+	JLabel info;
 	
 	Thread ballMove;
 	TimeThread timer;
 	
-	final int floor = 5;
-	final int wallCntByFloor = 12;
+	final int floor = 4;
+	final int wallCntByFloor = 11;
 	final int wallCount = floor * wallCntByFloor;
 	
 	final int frameWidth = 700;
 	final int frameHeight = 900;
 	
-	boolean isRestart = false;
+	static boolean isStart = false;
+	static boolean isRestart = false;
 	
 	public BreakOutFrame() {
 		// initialize Window
@@ -73,29 +78,40 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 		setVisible(true);
 	}
 	
-	void createBackPnl() {
-		backPnl = new JPanel();
-		backPnl.setBackground(Color.green);
-		backPnl.setBounds(0, 0, frameWidth, frameHeight);
-		ct.add(backPnl);
+	void createStartPnl() {
+		startPnl = new JPanel(null);
+		startPnl.setBackground(Color.black);
+		startPnl.setBounds(0, 0, frameWidth, frameHeight);
+		
+		createTitleLabel();
+		startPnl.add(titleLbl);
+		
+		createStartBtn();
+		startPnl.add(startBtn);
 	}
 	
 	void createMainPnl() {
 		mainPnl = new JPanel(null);
 		mainPnl.setBackground(Color.black);
 		mainPnl.setBounds(0, 0, frameWidth, frameHeight);
-		
-		createWalls(0, frameWidth, frameHeight);
+
+		walls = createWalls(0, frameWidth, frameHeight);
 		for(Wall wall : walls) mainPnl.add(wall);
-		
-		bar = new Bar(0, frameWidth, frameHeight);
+
+		bar = new Bar(0, frameWidth - 20, frameHeight);
 		mainPnl.add(bar);
-		
+
 		ball = new Ball(0, frameWidth - 20, frameHeight, bar, walls, mainPnl);
+		Ball.isDead = false;
 		mainPnl.add(ball);
 		
-		createInfoLabel();
-		mainPnl.add(info);
+		timerLbl = createTimeLabel();
+		mainPnl.add(timerLbl);
+		
+		scoreLbl = createScoreLabel();
+		mainPnl.add(scoreLbl);
+//		info = createInfoLabel();
+//		mainPnl.add(info);
 	}
 	
 	void createEndPnl() {
@@ -115,7 +131,34 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 		createSaveBtn();
 		endPnl.add(saveBtn);
 		
+		createRestartBtn();
+		endPnl.add(restartBtn);
+		
+		scoreLbl.setText("SCORE  " + scoreLbl.getText());
+		scoreLbl.setHorizontalAlignment(JLabel.CENTER);
+		scoreLbl.setFont(new Font("DungGeunMo", Font.BOLD, 70));
+		scoreLbl.setBounds(40, 200, 600, 150);
+		endPnl.add(scoreLbl);
+		
 		dataUpdate();
+	}
+	
+	void createTitleLabel() {
+		titleLbl = new JLabel();
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\title2.png");
+		titleLbl.setIcon(ii);
+		titleLbl.setSize(ii.getIconWidth(), ii.getIconHeight());
+		titleLbl.setLocation(40, 230);
+	}
+	
+	void createStartBtn() {
+		startBtn = new JLabel();
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\startBtn2.png");
+		startBtn.setIcon(ii);
+		startBtn.setSize(ii.getIconWidth(), ii.getIconHeight());
+		startBtn.setBackground(Color.black);
+		startBtn.setLocation(240, 450);
+		startBtn.addMouseListener(this);
 	}
 	
 	void createScoreTbl() {
@@ -129,12 +172,13 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 		DefaultTableCellRenderer tmp = new DefaultTableCellRenderer();
 		tmp.setHorizontalAlignment(JLabel.CENTER);
 		for(String colName : header) jtb.getColumn(colName).setCellRenderer(tmp);
-		jtb.setBounds(90, 200, 500, 450);
+//		jtb.setBounds(85, 200, 500, 450);
+		jtb.setBounds(85, 400, 500, 250);
 		dtm.addRow(header);
 	}
 	
-	void createWalls(int startX, int ctWidth, int ctHeight) {
-		walls = new Wall[wallCount];
+	Wall[] createWalls(int startX, int ctWidth, int ctHeight) {
+		Wall[] walls = new Wall[wallCount];
 		int tmpWallCnt = 0;
 		ctWidth -= 15;
 		ctHeight -= 15;
@@ -155,17 +199,41 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 					if(tmpWallCnt == wallCount) break a;
 				}
 		}
+		return walls;
 	}
 	
-	void createInfoLabel() {
-		info = new JLabel("time : " + 0 + "s, score : " + Bar.score);
-		info.setHorizontalAlignment(JLabel.CENTER);
-		info.setBounds(135, 550, 430, 100);
-		info.setForeground(Color.GRAY);
-		info.setBackground(Color.black);
-		info.setFont(new Font("¸¼Àº°íµñ", Font.BOLD, 20));
-		info.setOpaque(true);
+	JLabel createTimeLabel() {
+		JLabel timerLbl = new JLabel("0s");
+		timerLbl.setHorizontalAlignment(JLabel.CENTER);
+		timerLbl.setBounds(600, 0, 100, 50);
+		timerLbl.setForeground(Color.GRAY);
+		timerLbl.setBackground(Color.black);
+		timerLbl.setFont(new Font("DungGeunMo", Font.BOLD, 20));
+		timerLbl.setOpaque(true);
+		return timerLbl;
 	}
+	
+	JLabel createScoreLabel() {
+		JLabel scoreLbl = new JLabel("" + Bar.score);
+		//scoreLbl.setHorizontalAlignment(JLabel.CENTER);
+		scoreLbl.setBounds(10, 0, 100, 50);
+		scoreLbl.setForeground(Color.GRAY);
+		scoreLbl.setBackground(Color.black);
+		scoreLbl.setFont(new Font("DungGeunMo", Font.BOLD, 20));
+		scoreLbl.setOpaque(true);
+		return scoreLbl;
+	}
+	
+//	JLabel createInfoLabel() {
+//		JLabel info = new JLabel("time : " + 0 + "s, score : " + Bar.score);
+//		info.setHorizontalAlignment(JLabel.CENTER);
+//		info.setBounds(135, 550, 430, 100);
+//		info.setForeground(Color.GRAY);
+//		info.setBackground(Color.black);
+//		info.setFont(new Font("Times", Font.BOLD, 20));
+//		info.setOpaque(true);
+//		return info;
+//	}
 	
 	void createEndLabel() {
 		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\gameover.jpg");
@@ -177,39 +245,96 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 	
 	void createNameTextField() {
 		nameJtf = new JTextField(10);
-		nameJtf.setBackground(Color.black);
+		nameJtf.setBackground(Color.DARK_GRAY);
 		nameJtf.setForeground(Color.LIGHT_GRAY);
-		nameJtf.setBounds(125, 700, 250, 30);
+		nameJtf.setBounds(120, 700, 250, 30);
 	}
 	
 	void createSaveBtn() {
 		saveBtn = new JButton("Save");
+		saveBtn.setFont(new Font("DungGeunMo", Font.PLAIN, 30));
+		saveBtn.setBorderPainted(false);
 		saveBtn.setBackground(Color.BLACK);
 		saveBtn.setForeground(Color.white);
-		saveBtn.setBounds(420, 700, 150, 30);
+		saveBtn.setBounds(415, 700, 150, 30);
 		saveBtn.addActionListener(this);
 	}
 	
 	void createRestartBtn() {
 		restartBtn = new JButton("Restart");
+		restartBtn.setFont(new Font("DungGeunMo", Font.PLAIN, 30));
+		restartBtn.setBorderPainted(false);
 		restartBtn.setBackground(Color.BLACK);
 		restartBtn.setForeground(Color.white);
-		restartBtn.setBounds(270, 770, 150, 30);
+		restartBtn.setBounds(265, 770, 150, 30);
 		restartBtn.addActionListener(this);
 	}
 	
-	void startGame() {
-		// TODO Auto-generated method stub
-		initGame();
+	void process() {
+		createStartPnl();
+		ct.add(startPnl);
+		ct.revalidate();
+		ct.repaint();
+		
+		st = new ChangePnlThread();
+		st.start();
 		
 		try {
-			ballMove.join();
-			timer.join();
+			st.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		isStart = false;
+		
+		while(true) {
+			initGame();
+			
+			try {
+				ballMove.join();
+				timer.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			endGame();
+			
+			try {
+				st.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			isRestart = false;
+		}
+	}
+	
+	void initGame() {
+		ct.removeAll();
+		ct.revalidate();
+		ct.repaint();
+		
+		createMainPnl();
+		ct.add(mainPnl);
+		ct.revalidate();
+		ct.repaint();
+		ct.requestFocus();
+		
+		this.ballMove = null;
+		ballMove = new Thread(ball);
+		ballMove.start();
+		
+		this.timer = null;
+		timer = new TimeThread(scoreLbl, timerLbl);
+		bar.score = 0;
+		timer.timeEnd = false;
+		timer.start();
+	}
+	
+	void endGame() {
 		ct.removeAll();
 		ct.revalidate();
 		ct.repaint();
@@ -218,20 +343,9 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 		ct.add(endPnl);
 		ct.revalidate();
 		ct.repaint();
-	}
-	
-	void initGame() {
-		createMainPnl();
-		ct.add(mainPnl);
-		ct.revalidate();
-		ct.repaint();
-		ct.requestFocus();
 		
-		ballMove = new Thread(ball);
-		ballMove.start();
-		
-		timer = new TimeThread(info);
-		timer.start();
+		st = new ChangePnlThread();
+		st.start();
 	}
 	
 	@Override
@@ -272,6 +386,9 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 			dataUpdate();
 			nameJtf.setText("");
 		}
+		else {
+			isRestart = true;
+		}
 	}
 	
 	public void dataUpdate() {
@@ -284,5 +401,38 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 		((DefaultTableModel)jtb.getModel()).setNumRows(0);
 		String[] header = {"No", "User", "Score"};
 		((DefaultTableModel)jtb.getModel()).addRow(header);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\startClicked2.png");
+		startBtn.setIcon(ii);
+		startBtn.setSize(ii.getIconWidth(), ii.getIconHeight());
+		startBtn.setLocation(220, 440);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		isStart = true;
 	}
 }

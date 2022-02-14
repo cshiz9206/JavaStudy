@@ -10,7 +10,7 @@ public class Bar extends JLabel {
 	int maxWidth;
 	int moveLeftAmt = 0;
 	int moveRightAmt = 0;
-	final int SPEED = 10;
+	final int SPEED = 20;
 	
 	static int score = 0;
 	static String userName = "none";
@@ -19,8 +19,8 @@ public class Bar extends JLabel {
 		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\user.png");
 		setIcon(ii);
 		setSize(ii.getIconWidth(), ii.getIconHeight());
-		//setLocation(startX + maxWidth / 2 - (getWidth() / 2), maxHeight - 70);
-		setLocation(270, 810);
+		setLocation(startX + maxWidth / 2 - (getWidth() / 2), maxHeight - 70);
+		//setLocation(270, 810);
 		
 		this.maxWidth = maxWidth;
 	}

@@ -4,11 +4,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-//		TcpClient tcpConnect = new TcpClient();
-//		tcpConnect.start();
-		new BreakOutFrame().startGame();
-		//new BreakOutFrame();
-		//new Thread(new StageThread()).start();
+		new BreakOutFrame().process();
 	}
 
 }

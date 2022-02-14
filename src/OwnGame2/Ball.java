@@ -57,7 +57,7 @@ public class Ball extends JLabel implements Runnable {
 			//System.out.println(getX() + " " + user.getY());
 			//System.out.println(mainPnl.getBounds().getMaxX() + " " + mainPnl.getBounds().getMaxY());
 			//System.out.println(ct.getBounds().getMaxX() + " " + mainPnl.getBounds().getMaxY());
-			//mainPnl.repaint();
+			mainPnl.repaint();
 			
 			try {
 				Thread.sleep(10);
