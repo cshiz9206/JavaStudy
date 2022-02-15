@@ -2,15 +2,16 @@ package TCPBreakOutServer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 
 public class TcpServer extends Thread {
-	ClientConnection[] clientConnections;
+	ArrayList<ClientConnection> clientConnections;
 	ServerSocket listener;
-	final int clientMax = 2;
+	final int clientMax = 3;
 	int connectedCnt = 0;
 	
 	public TcpServer(int port) {
-		clientConnections = new ClientConnection[clientMax];
+		clientConnections = new ArrayList<ClientConnection>();
 		try {
 			listener = new ServerSocket(port);
 		} catch (IOException e) {
@@ -22,26 +23,23 @@ public class TcpServer extends Thread {
 	public void run() {
 		while(true) {
 			try {
-				// connectNo = connectedCnt + 1
-				clientConnections[connectedCnt] = 
-						new ClientConnection(connectedCnt + 1, this, listener.accept());
+				for(ClientConnection cc : clientConnections) {
+					if(!cc.isAlive()) {
+						cc = null;
+					}
+				}
+				clientConnections.add(new ClientConnection(connectedCnt + 1, this, listener.accept()));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			clientConnections[connectedCnt].start();
+			clientConnections.get(connectedCnt).start();
 			connectedCnt += 1;
-			if(connectedCnt == clientMax) sendMsg(-1, "-1,-1,-1");
+			if(connectedCnt % clientMax == 0) sendMsg(-1, "-1,-1,-1,-1,-1,-1");
 		}
 	}
 	
 	public synchronized void sendMsg(int sentNo, String data) {
-//		int sentClientNo = 0;
-//		
-//		// 현재 server에 들어온 데이터를 보낸 클라이언트 찾기
-//		for(int i = 0; i < connectedCnt; i++) {
-//			if(clientConnections[i].isSendNow) sentClientNo = i;
-//		}
 		
 		// 현재 server에 들어온 데이터를 보낸 클라이언트와 나머지 클라이언트 구분하여 데이터 전송
 		for(int i = 0; i < connectedCnt; i++) {
@@ -50,9 +48,9 @@ public class TcpServer extends Thread {
 				continue;
 			}
 			//System.out.println(i);
-			clientConnections[i].sendMsg(data);
+			clientConnections.get(i).sendMsg(data);
 		}
 		
-		clientConnections[sentNo - 1].setIsSendNow();
+		if(sentNo >= 0) clientConnections.get(sentNo - 1).setIsSendNow();
 	}
 }

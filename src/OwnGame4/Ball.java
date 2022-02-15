@@ -19,7 +19,7 @@ public class Ball extends JLabel implements Runnable {
 	final int MAXSPEED = 10;
 	
 	public Ball(int startX, int maxWidth, int maxHeight, Bar user, Bar user2, Wall[] walls, JPanel mainPnl) {
-		ImageIcon ii = new ImageIcon("..\\Test\\BreakOut_figure\\ball.png");
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\ball.png");
 		setIcon(ii);
 		setSize(ii.getIconWidth(), ii.getIconHeight());
 		setLocation(startX + maxWidth / 2 - (getWidth() / 2), maxHeight / 2);
@@ -78,9 +78,9 @@ public class Ball extends JLabel implements Runnable {
 	}
 	
 	void checkBumpedBorder() {
-		if(getX() <= 0) xSpeed *= -1;
-		if((getX() + getWidth()) >= maxWidth) xSpeed *= -1;
-		if(getY() <= 0) ySpeed *= -1;
+		if(getX() <= 0) xSpeed = Math.abs(xSpeed);
+		if((getX() + getWidth()) >= maxWidth) xSpeed = -Math.abs(xSpeed);
+		if(getY() <= 0) ySpeed = Math.abs(ySpeed);
 		if((getY() + getHeight()) >= maxHeight) isDead = true;
 	}
 	
@@ -165,19 +165,24 @@ public class Ball extends JLabel implements Runnable {
 			if(isBumped) {
 				walls[i].scoring();
 				crash(i);
-				
-				mainPnl.remove(walls[i]);
-				mainPnl.repaint();
-				walls[i] = null;
 			}
 		}
 	}
 	
 	void crash(int i) {
-		for(int j = 0; j < 100; j++) {
-			Fragment fg = new Fragment(walls[i], mainPnl);
-			new Thread(fg).start();
-		}
+		try {
+			if(walls[i] != null) {
+				for(int j = 0; j < 100; j++) {
+					Fragment fg = new Fragment(walls[i], mainPnl);
+					new Thread(fg).start();
+				}
+				
+				mainPnl.remove(walls[i]);
+				mainPnl.repaint();
+				
+				walls[i] = null;
+			}
+		} catch (NullPointerException e) {}
 	}
 	
 //	void calcDirSpeed(int i) {

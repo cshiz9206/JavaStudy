@@ -12,17 +12,17 @@ import javax.swing.table.DefaultTableModel;
 
 public class ScoreBoard {
 	private Connection conn; // DB와 연결성을 갖는 인터페이스
-	private static final String USERNAME = "TEST"; // DBMS 접속시 아이디
-	private static final String PASSWORD = "1234"; // DBMS 접속시 비밀번호
+	private static final String USERNAME = "root"; // DBMS 접속시 아이디
+	private static final String PASSWORD = "9206"; // DBMS 접속시 비밀번호
 	// DBMS 접속할 DB명 (프로토콜 : jdbc:mysql / host : localhost / port : 3306 / filename : scorelog)
-	private static final String URL = "jdbc:mysql://210.102.142.30:3306/scorelog";
+	private static final String URL = "jdbc:mysql://210.102.142.30:8888/scorelog?characterEncoding=utf-8";
 	
 	public ScoreBoard() {
 		try {
 			/* 드라이브 로딩 Driver loading(DB 제품군 선택) 
 			/ forName([클래스명] or [패키지명.드라이버클래스명]) 
 			/ 패키지명 : com.mysql.jdbc / 클래스명 : Driver */
-			Class.forName("com.mysql.jdbc.Driver"); 
+			Class.forName("com.mysql.cj.jdbc.Driver"); 
 			// 연결객체 생성 / DriverManager : JVM에서 JDBC 전체를 관리하는 클래스(Driver 등록, Connection 연결작업 등)
 			conn = DriverManager.getConnection(URL, USERNAME, PASSWORD); 
 			System.out.println("드라이버 로딩 성공");

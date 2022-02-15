@@ -153,7 +153,7 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 	
 	void createTitleLabel() {
 		titleLbl = new JLabel();
-		ImageIcon ii = new ImageIcon("..\\Test\\BreakOut_figure\\title2.png");
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\title2.png");
 		titleLbl.setIcon(ii);
 		titleLbl.setSize(ii.getIconWidth(), ii.getIconHeight());
 		titleLbl.setLocation(40, 230);
@@ -161,7 +161,7 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 	
 	void createStartBtn() {
 		startBtn = new JLabel();
-		ImageIcon ii = new ImageIcon("..\\Test\\BreakOut_figure\\startBtn2.png");
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\startBtn2.png");
 		startBtn.setIcon(ii);
 		startBtn.setSize(ii.getIconWidth(), ii.getIconHeight());
 		startBtn.setBackground(Color.black);
@@ -244,7 +244,7 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 //	}
 	
 	void createEndLabel() {
-		ImageIcon ii = new ImageIcon("..\\Test\\BreakOut_figure\\gameover.jpg");
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\gameover.jpg");
 		endLbl = new JLabel();
 		endLbl.setIcon(ii);
 		endLbl.setSize(ii.getIconWidth(), ii.getIconHeight());
@@ -317,6 +317,7 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 			}
 			
 			isRestart = false;
+			TcpClient.allConnected = false;
 		}
 	}
 	
@@ -386,7 +387,7 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 			moveRightProcess();
 		}
 		
-		tcpConnection.sendMsg(bar.getX(), ball.getX(), ball.getY());
+		tcpConnection.sendMsg(bar.getX() + "," + bar.moveLeftAmt + "," + bar.moveRightAmt + "," + ball.getX() + "," + ball.getY() + "," + -1);
 	}
 	
 	void moveRightProcess() {
@@ -420,7 +421,7 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 		if(e.getActionCommand().contentEquals("Save")) {
 			String userName = nameJtf.getText();
 			bar.userName = userName;
-			db.insertBoard(bar.userName, bar.score);
+			//db.insertBoard(bar.userName, bar.score);
 			dataUpdate();
 			nameJtf.setText("");
 		}
@@ -431,8 +432,8 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 	
 	public void dataUpdate() {
 		clearJtable();
-		ArrayList<String[]> data = db.readBoard();
-		for(String[] userData : data) ((DefaultTableModel)jtb.getModel()).addRow(userData);
+		//ArrayList<String[]> data = db.readBoard();
+		//for(String[] userData : data) ((DefaultTableModel)jtb.getModel()).addRow(userData);
 	}
 	
 	public void clearJtable() {
@@ -462,7 +463,7 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		ImageIcon ii = new ImageIcon("..\\Test\\BreakOut_figure\\startClicked2.png");
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\startClicked2.png");
 		startBtn.setIcon(ii);
 		startBtn.setSize(ii.getIconWidth(), ii.getIconHeight());
 		startBtn.setLocation(220, 440);

@@ -50,35 +50,36 @@ public class TcpClient extends Thread {
 	}
 	
 	public void run() {
-		data = new int[3];
+		data = new int[6];
 		while(true) {
 			try {
 				String tmp = in.readLine(); // line 중단점(\n) 주의
 				//System.out.println(tmp);
 				
 				if(tmp != null) {
-					System.out.println(tmp.split(",")[0]);
+					//System.out.println(tmp.split(",")[0]);
 					data[0] = Integer.parseInt(tmp.split(",")[0]); // bar
-					data[1] = Integer.parseInt(tmp.split(",")[1]); // ball x
-					data[2] = Integer.parseInt(tmp.split(",")[2]); // ball y
+					data[1] = Integer.parseInt(tmp.split(",")[1]); // bar moveLeftAmt
+					data[2] = Integer.parseInt(tmp.split(",")[2]); // bar moveRightAmt
+					data[3] = Integer.parseInt(tmp.split(",")[3]); // ball x
+					data[4] = Integer.parseInt(tmp.split(",")[4]); // ball y
+					data[5] = Integer.parseInt(tmp.split(",")[5]);
 					
 					if(data[0] == -1) {
 						allConnected = true;
 					}
 					else {
-//						if(data[0] == 1) {
-//							bar2.moveLeft();
-//							if((ball.getY() >= 900 - 150) && (ball.ySpeed > 0)) bar2.setMovLeftAmt(1);
-//							bar2.resetMovRightAmt();
-//						}
-//						if(data[0] == 2) {
-//							bar2.moveRight();
-//							if((ball.getY() >= 900 - 150) && (ball.ySpeed > 0)) bar2.setMovRightAmt(1);
-//							bar2.resetMovLeftAmt();
-//						}
-						bar2.moveByConnect(data[0]);
-						ball.moveByConnect(data[1], data[2]);
+						bar2.moveByConnect(data[0], data[4]);
+						if(data[1] != -1) bar2.setMovLeftAmt(data[1]);
+						if(data[2] != -1) bar2.setMovRightAmt(data[2]);
+						ball.moveByConnect(data[3], data[4]);
+						if(data[5] != -1) ball.crash(data[5]);
 					}
+				}
+				
+				if(!allConnected) {
+					clientSocket.close();
+					break; 
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -87,10 +88,10 @@ public class TcpClient extends Thread {
 		}
 	}
 	
-	public static void sendMsg(int barX, int ballX, int ballY) {
+	public static void sendMsg(String data) {
 		try {
 			//System.out.println(barX + "," + ballX + "," + ballY);
-			out.write(barX + "," + ballX + "," + ballY);
+			out.write(data);
 			out.newLine();
 			out.flush();
 		} catch (IOException e) {

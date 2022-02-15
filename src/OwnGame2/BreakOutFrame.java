@@ -317,6 +317,7 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 			}
 			
 			isRestart = false;
+			TcpClient.allConnected = false;
 		}
 	}
 	
@@ -386,7 +387,7 @@ public class BreakOutFrame extends JFrame implements KeyListener, ActionListener
 			moveRightProcess();
 		}
 		
-		tcpConnection.sendMsg(bar.getX(), ball.getX(), ball.getY());
+		tcpConnection.sendMsg(bar.getX() + "," + bar.moveLeftAmt + "," + bar.moveRightAmt + "," + ball.getX() + "," + ball.getY() + "," + -1);
 	}
 	
 	void moveRightProcess() {

@@ -22,7 +22,7 @@ public class ScoreBoard {
 			/* 드라이브 로딩 Driver loading(DB 제품군 선택) 
 			/ forName([클래스명] or [패키지명.드라이버클래스명]) 
 			/ 패키지명 : com.mysql.jdbc / 클래스명 : Driver */
-			Class.forName("com.mysql.jdbc.Driver"); 
+			Class.forName("com.mysql.cj.jdbc.Driver"); 
 			// 연결객체 생성 / DriverManager : JVM에서 JDBC 전체를 관리하는 클래스(Driver 등록, Connection 연결작업 등)
 			conn = DriverManager.getConnection(URL, USERNAME, PASSWORD); 
 			System.out.println("드라이버 로딩 성공");

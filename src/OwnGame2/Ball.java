@@ -56,7 +56,7 @@ public class Ball extends JLabel implements Runnable {
 			checkBumpedWall();
 			
 			setLocation((int)(getX() + xSpeed), (int)(getY() + ySpeed));
-			TcpClient.sendMsg(user.getX(), getX(), getY());
+			TcpClient.sendMsg(user.getX() + "," + -1 + "," + -1 + "," + getX() + "," + getY() + "," + -1);
 			//System.out.println(getX() + " " + user.getY());
 			//System.out.println(mainPnl.getBounds().getMaxX() + " " + mainPnl.getBounds().getMaxY());
 			//System.out.println(ct.getBounds().getMaxX() + " " + mainPnl.getBounds().getMaxY());
@@ -83,9 +83,9 @@ public class Ball extends JLabel implements Runnable {
 	}
 	
 	void checkBumpedBorder() {
-		if(getX() <= 0) xSpeed *= -1;
-		if((getX() + getWidth()) >= maxWidth) xSpeed *= -1;
-		if(getY() <= 0) ySpeed *= -1;
+		if(getX() <= 0) xSpeed = Math.abs(xSpeed);
+		if((getX() + getWidth()) >= maxWidth) xSpeed = -Math.abs(xSpeed);
+		if(getY() <= 0) ySpeed = Math.abs(ySpeed);
 		if((getY() + getHeight()) >= maxHeight) isDead = true;
 	}
 	
@@ -169,20 +169,26 @@ public class Ball extends JLabel implements Runnable {
 			
 			if(isBumped) {
 				walls[i].scoring();
+				TcpClient.sendMsg(user.getX() + "," + -1 + "," + -1 + "," + getX() + "," + getY() + "," + i);
 				crash(i);
-				
-				mainPnl.remove(walls[i]);
-				mainPnl.repaint();
-				walls[i] = null;
 			}
 		}
 	}
 	
 	void crash(int i) {
-		for(int j = 0; j < 100; j++) {
-			Fragment fg = new Fragment(walls[i], mainPnl);
-			new Thread(fg).start();
-		}
+		try {
+			if(walls[i] != null) {
+				for(int j = 0; j < 100; j++) {
+					Fragment fg = new Fragment(walls[i], mainPnl);
+					new Thread(fg).start();
+				}
+				
+				mainPnl.remove(walls[i]);
+				mainPnl.repaint();
+				
+				walls[i] = null;
+			}
+		} catch (NullPointerException e) {}
 	}
 	
 //	void calcDirSpeed(int i) {

@@ -12,6 +12,7 @@ import java.net.Socket;
 public class ClientConnection extends Thread {
 	int connectNo;
 	TcpServer tcpServer;
+	Socket socket;
 	BufferedReader in; BufferedWriter out;
 //	ObjectInputStream inObj;
 //	ObjectOutputStream outObj;
@@ -21,6 +22,7 @@ public class ClientConnection extends Thread {
 	public ClientConnection(int connectNo, TcpServer tcpServer, Socket socket) {
 		this.connectNo = connectNo;
 		this.tcpServer = tcpServer;
+		this.socket = socket;
 		
 		try {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -38,8 +40,13 @@ public class ClientConnection extends Thread {
 	public void run() {
 		while(true) {
 			try {
+				if(!socket.isConnected()) {
+					socket.close();
+					break;
+				}
+				
 				receivedMsg = in.readLine();
-				System.out.println(receivedMsg);
+				//System.out.println(receivedMsg);
 				
 				if(receivedMsg != null) isSendNow = true;
 				tcpServer.sendMsg(connectNo, receivedMsg); // 서버에서 받은 msg를 다른 클라이언트들에 전송
@@ -52,7 +59,7 @@ public class ClientConnection extends Thread {
 	
 	public void sendMsg(String data) {
 		try {
-			System.out.println(data);
+			//System.out.println(data);
 			out.write(data);
 			out.newLine();
 			out.flush();
