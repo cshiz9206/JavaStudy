@@ -12,20 +12,21 @@ import java.net.Socket;
 public class ClientConnection extends Thread {
 	int connectNo;
 	TcpServer tcpServer;
-//	BufferedReader in; BufferedWriter out;
-	ObjectInputStream inObj;
-	ObjectOutputStream outObj;
-	boolean isSendNow = false; Object receivedMsg;
+	BufferedReader in; BufferedWriter out;
+//	ObjectInputStream inObj;
+//	ObjectOutputStream outObj;
+	boolean isSendNow = false; 
+	String receivedMsg;
 	
 	public ClientConnection(int connectNo, TcpServer tcpServer, Socket socket) {
 		this.connectNo = connectNo;
 		this.tcpServer = tcpServer;
 		
 		try {
-//			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-			outObj = new ObjectOutputStream(socket.getOutputStream());
-			inObj = new ObjectInputStream(socket.getInputStream());
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+//			outObj = new ObjectOutputStream(socket.getOutputStream());
+//			inObj = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -37,24 +38,24 @@ public class ClientConnection extends Thread {
 	public void run() {
 		while(true) {
 			try {
-				receivedMsg = inObj.readObject();
-				//System.out.println(receivedMsg);
+				receivedMsg = in.readLine();
+				System.out.println(receivedMsg);
 				
 				if(receivedMsg != null) isSendNow = true;
 				tcpServer.sendMsg(connectNo, receivedMsg); // 서버에서 받은 msg를 다른 클라이언트들에 전송
-			} catch (IOException | ClassNotFoundException e) {
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	public void sendMsg(Object obj) {
+	public void sendMsg(String data) {
 		try {
-			//System.out.println(obj);
-			outObj.writeObject(obj);
-			//out.newLine();
-			outObj.flush();
+			System.out.println(data);
+			out.write(data);
+			out.newLine();
+			out.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

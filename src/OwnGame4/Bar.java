@@ -1,4 +1,4 @@
-package OwnGame2;
+package OwnGame4;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -14,7 +14,7 @@ public class Bar extends JLabel {
 	static String userName = "none";
 	
 	public Bar(int startX, int maxWidth, int maxHeight) {
-		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\user.png");
+		ImageIcon ii = new ImageIcon("..\\Test\\BreakOut_figure\\user.png");
 		setIcon(ii);
 		setSize(ii.getIconWidth(), ii.getIconHeight());
 		setLocation(startX + maxWidth / 2 - (getWidth() / 2), maxHeight - 70);

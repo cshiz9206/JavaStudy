@@ -1,23 +1,25 @@
-package OwnGame2;
+package TCPBreakOutServer;
 
-import java.awt.Container;
 import java.awt.Point;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-public class ClientBall extends JLabel implements Runnable {
+public class Ball extends JLabel implements Runnable {
 	int maxWidth, maxHeight;
-	ClientBar user;
+	
+	Bar user;
 	Wall[] walls;
-	Container ct;
+	JPanel mainPnl;
+	
 	double xSpeed, ySpeed;
 	static boolean isDead = false;
 	final int MAXSPEED = 10;
 	
-	public ClientBall(int startX, int maxWidth, int maxHeight, ClientBar user, Wall[] walls, Container ct) {
-		ImageIcon ii = new ImageIcon(System.getProperty("user.dir") + "\\src\\OwnGame\\ball.png");
+	public Ball(int startX, int maxWidth, int maxHeight, Bar user, Wall[] walls, JPanel mainPnl) {
+		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\ball.png");
 		setIcon(ii);
 		setSize(ii.getIconWidth(), ii.getIconHeight());
 		setLocation(startX + maxWidth / 2 - (getWidth() / 2), maxHeight / 2);
@@ -26,10 +28,11 @@ public class ClientBall extends JLabel implements Runnable {
 		this.maxHeight = maxHeight;
 		this.user = user;
 		this.walls = walls;
-		this.ct = ct;
+		this.mainPnl = mainPnl;
 		
+		Random rd = new Random();
 		this.xSpeed = 0;
-		this.ySpeed = 0;
+		this.ySpeed = rd.nextInt(MAXSPEED - 5) + 5;
 	}
 
 	@Override
@@ -37,14 +40,12 @@ public class ClientBall extends JLabel implements Runnable {
 		// TODO Auto-generated method stub
 		while(true) {
 			if(checkWallsRemoved()) {
-				ct.remove(this);
-				ct.repaint();
+				mainPnl.remove(this);
 				isDead = true;
 				break;
 			}
 			if(isDead || TimeThread.timeEnd) {
-				ct.remove(this);
-				ct.repaint();
+				mainPnl.remove(this);
 				break;
 			}
 			
@@ -53,7 +54,10 @@ public class ClientBall extends JLabel implements Runnable {
 			checkBumpedWall();
 			
 			setLocation((int)(getX() + xSpeed), (int)(getY() + ySpeed));
-			ct.repaint();
+			//System.out.println(getX() + " " + user.getY());
+			//System.out.println(mainPnl.getBounds().getMaxX() + " " + mainPnl.getBounds().getMaxY());
+			//System.out.println(ct.getBounds().getMaxX() + " " + mainPnl.getBounds().getMaxY());
+			mainPnl.repaint();
 			
 			try {
 				Thread.sleep(10);
@@ -146,8 +150,8 @@ public class ClientBall extends JLabel implements Runnable {
 				walls[i].scoring();
 				crash(i);
 				
-				ct.remove(walls[i]);
-				ct.repaint();
+				mainPnl.remove(walls[i]);
+				mainPnl.repaint();
 				walls[i] = null;
 			}
 		}
@@ -155,8 +159,28 @@ public class ClientBall extends JLabel implements Runnable {
 	
 	void crash(int i) {
 		for(int j = 0; j < 100; j++) {
-			Fragment fg = new Fragment(walls[i], ct);
+			Fragment fg = new Fragment(walls[i], mainPnl);
 			new Thread(fg).start();
 		}
 	}
+	
+//	void calcDirSpeed(int i) {
+//		Vector<Double> p1v = new Vector<Double>(Arrays.asList(xSpeed, ySpeed));
+//		Vector<Double> p1r = new Vector<Double>(Arrays.asList((double)getBounds().getCenterX(), (double)getBounds().getCenterY()));
+//		Vector<Double> p2r = new Vector<Double>(Arrays.asList((double)walls[i].getBounds().getCenterX(), (double)walls[i].getBounds().getCenterY()));
+//		Vector<Double> p2v = new Vector<Double>(Arrays.asList((double)0, (double)0));
+//		Vector<Double> p1rSp2r = new Vector<Double>(Arrays.asList((double)p1r.get(0) - (double)p2r.get(0), (double)p1r.get(1) - (double)p2r.get(1)));
+//		Vector<Double> p2rSp1r = new Vector<Double>(Arrays.asList((double)p2r.get(0) - (double)p1r.get(0), (double)p2r.get(1) - (double)p1r.get(1)));
+//		Vector<Double> p1vSp2v = new Vector<Double>(Arrays.asList((double)p1v.get(0) - (double)p2v.get(0), (double)p1v.get(1) - (double)p2v.get(1)));
+//		Vector<Double> dTmp = new Vector<Double>(Arrays.asList((double)p1rSp2r.get(0) / (double)p1rSp2r.get(0), (double)p1rSp2r.get(1) / (double)p1rSp2r.get(1)));
+//		Vector<Double> d = new Vector<Double>(Arrays.asList((double)dTmp.get(0) * (double)dTmp.get(0), ((double)dTmp.get(1) * (double)dTmp.get(1))));
+//		Vector<Double> dotTmp = new Vector<Double>(Arrays.asList(Math.abs((double)p1vSp2v.get(0) * (double)p1rSp2r.get(0)), Math.abs((double)p1vSp2v.get(1) * (double)p1rSp2r.get(1))));
+//		double dot = (double)dotTmp.get(0) + (double)dotTmp.get(1);
+//		Vector<Double> div = new Vector<Double>(Arrays.asList((double)dot / (double)d.get(0), (double)dot / (double)d.get(1)));
+//		Vector<Double> mul = new Vector<Double>(Arrays.asList((double)div.get(0) * (double)p2rSp1r.get(0), (double)div.get(1) * (double)p2rSp1r.get(1)));
+//		Vector<Double> sub = new Vector<Double>(Arrays.asList((double)p2v.get(0) - (double)mul.get(0), (double)p2v.get(1) - (double)mul.get(1)));
+//		Vector<Double> u1 = sub;
+//		xSpeed = u1.get(0) % 5;
+//		ySpeed = u1.get(1) % 5;
+//	}
 }

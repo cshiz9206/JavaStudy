@@ -1,4 +1,4 @@
-package OwnGame2;
+package OwnGame4;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -32,7 +32,7 @@ public class TcpClient extends Thread {
 	public TcpClient(Bar bar, Bar bar2, Ball ball) {
 		try {
 			System.out.println(InetAddress.getLocalHost().getHostAddress()); //https://onmay.tistory.com/18
-			clientSocket = new Socket(InetAddress.getLocalHost().getHostAddress(), PORT);
+			clientSocket = new Socket("210.102.142.30", PORT);
 			System.out.println("서버와 연결이 되었습니다.\n");
 			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));

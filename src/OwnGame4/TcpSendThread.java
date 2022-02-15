@@ -1,4 +1,4 @@
-package OwnGame2;
+package OwnGame4;
 
 public class TcpSendThread extends Thread {
 	Bar bar;

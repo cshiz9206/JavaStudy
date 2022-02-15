@@ -1,4 +1,4 @@
-package OwnGame2;
+package OwnGame4;
 
 import java.awt.Point;
 import java.util.Random;
@@ -19,7 +19,7 @@ public class Ball extends JLabel implements Runnable {
 	final int MAXSPEED = 10;
 	
 	public Ball(int startX, int maxWidth, int maxHeight, Bar user, Bar user2, Wall[] walls, JPanel mainPnl) {
-		ImageIcon ii = new ImageIcon("..\\BreakOut_figure\\ball.png");
+		ImageIcon ii = new ImageIcon("..\\Test\\BreakOut_figure\\ball.png");
 		setIcon(ii);
 		setSize(ii.getIconWidth(), ii.getIconHeight());
 		setLocation(startX + maxWidth / 2 - (getWidth() / 2), maxHeight / 2);
@@ -55,11 +55,6 @@ public class Ball extends JLabel implements Runnable {
 			checkBumpedUser2();
 			checkBumpedWall();
 			
-			setLocation((int)(getX() + xSpeed), (int)(getY() + ySpeed));
-			TcpClient.sendMsg(user.getX(), getX(), getY());
-			//System.out.println(getX() + " " + user.getY());
-			//System.out.println(mainPnl.getBounds().getMaxX() + " " + mainPnl.getBounds().getMaxY());
-			//System.out.println(ct.getBounds().getMaxX() + " " + mainPnl.getBounds().getMaxY());
 			mainPnl.repaint();
 			
 			try {
